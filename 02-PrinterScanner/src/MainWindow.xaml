@@ -1,0 +1,93 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="02 - Printer Scanner"
+        Width="1080" Height="680"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="891" MinHeight="444">
+    <DockPanel>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="24,18">
+            <StackPanel>
+                <TextBlock Text="Printer Scanner" Style="{StaticResource HeaderTitle}"/>
+                <TextBlock x:Name="lblSubtitle" Style="{StaticResource HeaderSubtitle}" Margin="0,2,0,0"
+                           Text="Discovery stampanti via probe TCP. Read-only sulla rete."/>
+            </StackPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Margin="20,12,20,0" x:Name="brdAdminBanner">
+            <TextBlock x:Name="lblAdminWarn" Style="{StaticResource AdminBannerText}"/>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="20,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Subnet base:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox  Grid.Column="1" x:Name="txtBaseIP" Text="192.168.1"/>
+                <TextBlock Grid.Column="2" Text=" da " VerticalAlignment="Center" Margin="8,0"/>
+                <TextBox  Grid.Column="3" x:Name="txtStart" Text="1"/>
+                <TextBlock Grid.Column="4" Text=" a " VerticalAlignment="Center" Margin="8,0"/>
+                <TextBox  Grid.Column="5" x:Name="txtEnd"   Text="254"/>
+
+                <StackPanel Grid.Column="7" Orientation="Horizontal">
+                    <Button x:Name="btnScan"   Content="Avvia scansione" IsDefault="True" AutomationProperties.Name="Avvia la scansione della subnet"/>
+                    <Button x:Name="btnStop"   Content="Annulla" Style="{StaticResource SecondaryButton}" IsEnabled="False"/>
+                    <Button x:Name="btnExport" Content="Esporta CSV" Style="{StaticResource SecondaryButton}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,1,0,0"
+                Padding="20,8">
+            <DockPanel>
+                <TextBlock x:Name="lblCounter" DockPanel.Dock="Right"
+                           Foreground="{StaticResource TextSecondaryBrush}" Text=""/>
+                <ProgressBar AutomationProperties.Name="Avanzamento operazione" x:Name="prgScan" Height="6" Minimum="0" Maximum="100" Value="0"
+                             Background="#FFE5E5E5" Foreground="{StaticResource AccentBrush}"
+                             BorderThickness="0" VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,1,0,0"
+                Padding="20,8">
+            <TextBlock x:Name="lblStatus" Text="Pronto. Verifica subnet base e premi 'Avvia scansione'."/>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="20">
+            <Grid>
+              <TextBlock x:Name="lblEmptyPrinters" Visibility="Collapsed"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Margin="32" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap"
+                         Foreground="{StaticResource TextSecondaryBrush}"/>
+              <ListView x:Name="lvPrinters" AutomationProperties.Name="Elenco stampanti" BorderThickness="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="IP"           Width="120" DisplayMemberBinding="{Binding IP}"/>
+                        <GridViewColumn Header="Hostname"     Width="180" DisplayMemberBinding="{Binding Hostname}"/>
+                        <GridViewColumn Header="Produttore"   Width="130" DisplayMemberBinding="{Binding Manufacturer}"/>
+                        <GridViewColumn Header="MAC"          Width="130" DisplayMemberBinding="{Binding MAC}"/>
+                        <GridViewColumn Header="Identificativo" Width="220" DisplayMemberBinding="{Binding Title}"/>
+                        <GridViewColumn Header="Porte aperte" Width="180" DisplayMemberBinding="{Binding Ports}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            </Grid>
+        </Border>
+
+    </DockPanel>
+</Window>

@@ -1,0 +1,94 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="08 - Backup Verifier"
+        Width="1080" Height="680"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="891" MinHeight="444">
+    <DockPanel>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="24,18">
+            <StackPanel>
+                <TextBlock Text="Backup Verifier" Style="{StaticResource HeaderTitle}"/>
+                <TextBlock Style="{StaticResource HeaderSubtitle}" Margin="0,2,0,0"
+                           Text="Verifica log dei sistemi di backup installati. Read-only."/>
+            </StackPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Margin="20,12,20,0" x:Name="brdAdminBanner">
+            <TextBlock x:Name="lblAdminWarn" Style="{StaticResource AdminBannerText}"/>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="20,12">
+            <DockPanel>
+                <!-- Contatore a destra: presente ora in tutti i tool, stessa posizione. -->
+                <TextBlock x:Name="lblCounter" DockPanel.Dock="Right" VerticalAlignment="Center"
+                           Margin="12,0,4,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="btnCheck"     Content="Verifica backup" IsDefault="True" AutomationProperties.Name="Verifica lo stato dei backup"/>
+                    <Button x:Name="btnExportTxt" Content="Esporta TXT" Style="{StaticResource SecondaryButton}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,1,0,0"
+                Padding="20,10">
+            <TextBlock x:Name="lblStatus" Text="Pronto. Premi 'Verifica backup'."/>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="20" Padding="0">
+          <Grid>
+            <!-- Stato vuoto: una ListView bianca si legge come errore di
+                 caricamento. Il testo viene impostato dal codice. -->
+            <TextBlock x:Name="lblEmpty" Visibility="Collapsed"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Margin="32" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap"
+                       Foreground="{StaticResource TextSecondaryBrush}"/>
+            <ListView x:Name="lvBackups" BorderThickness="0"
+                      AutomationProperties.Name="Tabella dei sistemi di backup rilevati">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Sistema"     Width="200" DisplayMemberBinding="{Binding System}"/>
+                        <GridViewColumn Header="Installato"  Width="100" DisplayMemberBinding="{Binding Installed}"/>
+                        <!-- Un backup fallito deve saltare all'occhio: colore +
+                             testo, mai il solo colore. -->
+                        <GridViewColumn Header="Stato" Width="180">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <!-- Si lega a Severity (normalizzata nel modulo),
+                                         non a Status: Status è testo libero e
+                                         diverso per ogni sistema di backup. Il
+                                         testo originale resta visibile. -->
+                                    <TextBlock x:Name="cell" Text="{Binding Status}" FontWeight="SemiBold"/>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding Severity}" Value="OK">
+                                            <Setter TargetName="cell" Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Severity}" Value="Failure">
+                                            <Setter TargetName="cell" Property="Foreground" Value="{StaticResource ErrorBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Severity}" Value="Warning">
+                                            <Setter TargetName="cell" Property="Foreground" Value="{StaticResource WarningTextBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Severity}" Value="NonRilevato">
+                                            <Setter TargetName="cell" Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                            <Setter TargetName="cell" Property="FontWeight" Value="Normal"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Ultimo job"  Width="180" DisplayMemberBinding="{Binding LastJob}"/>
+                        <GridViewColumn Header="Dettaglio"   Width="380" DisplayMemberBinding="{Binding Detail}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+          </Grid>
+        </Border>
+
+    </DockPanel>
+</Window>

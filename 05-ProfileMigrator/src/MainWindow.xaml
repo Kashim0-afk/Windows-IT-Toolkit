@@ -1,0 +1,106 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="05 - Profile Migrator (Export)"
+        Width="1000" Height="620"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="860" MinHeight="444">
+    <DockPanel>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="24,18">
+            <StackPanel>
+                <TextBlock Text="Profile Migrator" Style="{StaticResource HeaderTitle}"/>
+                <TextBlock Style="{StaticResource HeaderSubtitle}" Margin="0,2,0,0"
+                           Text="Prepara il bagaglio di un utente per migrarlo su un altro PC: Outlook, browser, mappature di rete, stampanti, WiFi. (v1: solo export, l'import su PC destinazione arrivera' in v2.)"/>
+            </StackPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Margin="20,12,20,0" x:Name="brdAdminBanner">
+            <TextBlock x:Name="lblAdminWarn" Style="{StaticResource AdminBannerText}"/>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="20,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Destinazione:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox  Grid.Column="1" x:Name="txtDest"/>
+                <Button   Grid.Column="2" x:Name="btnBrowse"  Content="Sfoglia..." Style="{StaticResource SecondaryButton}"/>
+                <!-- Azione primaria PRIMA della secondaria, come negli altri 9 tool:
+                     qui "Anteprima" (secondaria) precedeva "Esporta" (primaria) e
+                     chi era abituato al resto della suite cliccava il primo pulsante
+                     credendo fosse l'azione principale. -->
+                <Button   Grid.Column="3" x:Name="btnExport"  Content="Esporta" IsDefault="True"
+                          AutomationProperties.Name="Esporta il profilo nella cartella scelta"/>
+                <Button   Grid.Column="4" x:Name="btnPreview" Content="Anteprima"  Style="{StaticResource SecondaryButton}"
+                          ToolTip="Mostra cosa verrebbe esportato (read-only, nessun file scritto)"/>
+                <TextBlock Grid.Column="5" x:Name="lblCounter" VerticalAlignment="Center"
+                           Margin="12,0,0,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+            </Grid>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="20,8">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Categorie:" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                <CheckBox x:Name="chkOutlook"  Content="Outlook"   IsChecked="True"  VerticalAlignment="Center" Margin="0,0,12,0"
+                          ToolTip="Profili (chiavi registry HKCU Office), firme email, lista file PST/OST"/>
+                <CheckBox x:Name="chkBrowser"  Content="Browser"   IsChecked="True"  VerticalAlignment="Center" Margin="0,0,12,0"
+                          ToolTip="Preferiti di Chrome ed Edge (solo bookmark, no password). Firefox: places.sqlite, che contiene preferiti E CRONOLOGIA completa di navigazione (dato personale)."/>
+                <CheckBox x:Name="chkSMB"      Content="Mappature SMB" IsChecked="True" VerticalAlignment="Center" Margin="0,0,12,0"
+                          ToolTip="Unità di rete mappate (Z:\, Y:\, ecc.) con path remoto"/>
+                <CheckBox x:Name="chkWiFi"     Content="WiFi"      IsChecked="False" VerticalAlignment="Center" Margin="0,0,12,0"
+                          ToolTip="Profili reti WiFi salvate (SSID, autenticazione). Senza password se non spunti la casella accanto."/>
+                <!-- Dipende da chkWiFi: senza il binding la casella si poteva spuntare
+                     anche con WiFi deselezionato, ma il codice la ignorava. Ora è
+                     disabilitata finche' WiFi non è attivo, e la freccia mostra la
+                     subordinazione. WarningTextBrush al posto di WarningBrush:
+                     quest'ultimo su bianco dava 2.6:1, sotto la soglia WCAG AA. -->
+                <CheckBox x:Name="chkWiFiKeys" Content="&#8627; con le password in chiaro (rischio GDPR)" IsChecked="False" VerticalAlignment="Center" Margin="0,0,12,0"
+                          Foreground="{StaticResource WarningTextBrush}" FontWeight="SemiBold"
+                          IsEnabled="{Binding IsChecked, ElementName=chkWiFi}"
+                          ToolTip="Estrae netsh wlan export con key=clear. I file XML conterranno la chiave WPA/WPA2 in chiaro."/>
+                <CheckBox x:Name="chkPrinters" Content="Stampanti" IsChecked="True"  VerticalAlignment="Center" Margin="0,0,12,0"
+                          ToolTip="Lista stampanti installate: nome, driver, porta (no driver binari)"/>
+                <Separator Width="20" Background="Transparent"/>
+                <Button x:Name="btnOpenFolder" Content="Apri cartella export" Style="{StaticResource SecondaryButton}"/>
+                <Button x:Name="btnElevate"    Content="Riavvia come amministratore" Style="{StaticResource SecondaryButton}" Visibility="Collapsed"/>
+            </StackPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,1,0,0"
+                Padding="20,10">
+            <TextBlock x:Name="lblStatus" Text="Pronto.  1) Conferma o cambia la cartella di destinazione   2) Seleziona le categorie   3) Premi 'Esporta'."/>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="20" Padding="0">
+            <Grid>
+              <TextBlock x:Name="lblEmptyResult" Visibility="Collapsed"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Margin="32" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap"
+                         Foreground="{StaticResource TextSecondaryBrush}"/>
+              <ListView x:Name="lvResult" AutomationProperties.Name="Riepilogo delle categorie da esportare" BorderThickness="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Categoria" Width="200" DisplayMemberBinding="{Binding Category}"/>
+                        <GridViewColumn Header="Elementi"  Width="100" DisplayMemberBinding="{Binding Count}"/>
+                        <GridViewColumn Header="File esportati" Width="600" DisplayMemberBinding="{Binding ItemsJoined}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            </Grid>
+        </Border>
+
+    </DockPanel>
+</Window>

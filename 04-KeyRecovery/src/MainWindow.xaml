@@ -1,0 +1,87 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="04 - Key Recovery"
+        Width="1000" Height="620"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="860" MinHeight="444">
+    <DockPanel>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="24,18">
+            <StackPanel>
+                <TextBlock Text="Key Recovery" Style="{StaticResource HeaderTitle}"/>
+                <TextBlock x:Name="lblSubtitle" Style="{StaticResource HeaderSubtitle}" Margin="0,2,0,0"/>
+                <!-- Stile dal tema, non colori scritti a mano: prima erano
+                     #FFFFF4CE/#FFE5C46B/#FF8B5A00, diversi dal resto della suite
+                     e col testo sotto la soglia di contrasto WCAG AA. -->
+                <Border Style="{StaticResource AdminBannerWarn}" Margin="0,8,0,0">
+                    <TextBlock Style="{StaticResource AdminBannerText}"
+                               Foreground="{StaticResource WarningTextBrush}" FontSize="12">
+                        ATTENZIONE: questo tool legge dati sensibili (chiavi licenza, password WiFi).
+                        Esegui SOLO con consenso scritto del cliente o sul tuo PC personale.
+                        Output salvato in locale, mai trasmesso.
+                    </TextBlock>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Nessun colore hardcoded: lo stile viene applicato dal codice via
+             Set-ReadOnlyExtrasBanner, come negli altri tool. Prima questo banner
+             aveva i propri #FFFFF4CE/#FFE5C46B leggermente diversi dal tema. -->
+        <Border DockPanel.Dock="Top" Margin="20,12,20,0" x:Name="brdAdminBanner">
+            <TextBlock x:Name="lblAdminWarn" Style="{StaticResource AdminBannerText}"/>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="20,12">
+            <DockPanel>
+                <TextBlock x:Name="lblCounter" DockPanel.Dock="Right" VerticalAlignment="Center"
+                           Margin="12,0,4,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <StackPanel Orientation="Horizontal">
+                <Button x:Name="btnRecover"    Content="Avvia recovery" IsDefault="True" AutomationProperties.Name="Avvia il recupero delle chiavi"/>
+                <Button x:Name="btnExportJson" Content="Esporta JSON"        Style="{StaticResource SecondaryButton}"/>
+                <Button x:Name="btnExportTxt"  Content="Esporta TXT"         Style="{StaticResource SecondaryButton}"/>
+                <Button x:Name="btnOpenFolder" Content="Apri cartella report" Style="{StaticResource SecondaryButton}"/>
+                <Button x:Name="btnElevate"    Content="Riavvia come amministratore" Style="{StaticResource SecondaryButton}" Visibility="Collapsed"/>
+            </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,1,0,0"
+                Padding="20,8">
+            <TextBlock x:Name="lblStatus" Text="Pronto. Premi 'Avvia recovery' (verrà chiesto consenso)."/>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="20" Padding="0">
+            <TabControl Background="Transparent" BorderThickness="0">
+                <TabItem Header="Windows">
+                    <TextBox x:Name="txtWin" IsReadOnly="True" FontFamily="Consolas" FontSize="13"
+                             VerticalScrollBarVisibility="Auto" BorderThickness="0" Padding="14"/>
+                </TabItem>
+                <TabItem Header="WiFi">
+                    <Grid>
+              <TextBlock x:Name="lblEmptyWifi" Visibility="Collapsed"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Margin="32" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap"
+                         Foreground="{StaticResource TextSecondaryBrush}"/>
+              <ListView x:Name="lvWifi" AutomationProperties.Name="Elenco reti WiFi salvate" BorderThickness="0">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Profilo"        Width="220" DisplayMemberBinding="{Binding Profile}"/>
+                                <GridViewColumn Header="SSID"           Width="180" DisplayMemberBinding="{Binding SSID}"/>
+                                <GridViewColumn Header="Autenticazione" Width="140" DisplayMemberBinding="{Binding Authentication}"/>
+                                <GridViewColumn Header="Cifratura"      Width="100" DisplayMemberBinding="{Binding Cipher}"/>
+                                <GridViewColumn Header="Password"       Width="220" DisplayMemberBinding="{Binding Password}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+            </Grid>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+    </DockPanel>
+</Window>

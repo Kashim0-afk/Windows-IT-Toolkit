@@ -1,0 +1,89 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="06 - Network Triage"
+        Width="1080" Height="680"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="891" MinHeight="444">
+    <DockPanel>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="24,18">
+            <StackPanel>
+                <TextBlock Text="Network Triage" Style="{StaticResource HeaderTitle}"/>
+                <TextBlock x:Name="lblSubtitle" Style="{StaticResource HeaderSubtitle}" Margin="0,2,0,0"
+                           Text="Diagnosi guidata della connettivita' di rete. Read-only puro."/>
+            </StackPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Margin="20,12,20,0" x:Name="brdAdminBanner">
+            <TextBlock x:Name="lblAdminWarn" Style="{StaticResource AdminBannerText}"/>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="20,12">
+            <DockPanel>
+                <TextBlock x:Name="lblCounter" DockPanel.Dock="Right" VerticalAlignment="Center"
+                           Margin="12,0,4,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <StackPanel Orientation="Horizontal">
+                <Button x:Name="btnRun"        Content="Avvia diagnosi" IsDefault="True" AutomationProperties.Name="Avvia la diagnosi di rete"/>
+                <Button x:Name="btnStop"       Content="Annulla"              Style="{StaticResource SecondaryButton}"/>
+                <Button x:Name="btnExportTxt"  Content="Esporta TXT"          Style="{StaticResource SecondaryButton}"/>
+                <Button x:Name="btnIpconfig"   Content="ipconfig /all"        Style="{StaticResource SecondaryButton}"/>
+                <Button x:Name="btnFlushDns"   Content="Apri Network Settings" Style="{StaticResource SecondaryButton}"/>
+            </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,1,0,0"
+                Padding="20,10">
+            <TextBlock x:Name="lblVerdict" Text="Premi 'Avvia diagnosi' per iniziare." TextWrapping="Wrap" FontWeight="SemiBold"/>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="20" Padding="0">
+            <Grid>
+              <TextBlock x:Name="lblEmptySteps" Visibility="Collapsed"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Margin="32" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap"
+                         Foreground="{StaticResource TextSecondaryBrush}"/>
+              <ListView x:Name="lvSteps" AutomationProperties.Name="Tabella dei risultati" BorderThickness="0">
+                <ListView.View>
+                    <GridView>
+                        <!-- Colore + simbolo, mai il colore da solo: chi non
+                             distingue rosso e verde deve comunque leggere l'esito.
+                             StatusOk/StatusErr erano definiti nel tema ma non usati
+                             da nessuno: un OK e un FAIL erano identici a vedersi. -->
+                        <GridViewColumn Header="Stato" Width="110">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock x:Name="cell" Text="{Binding Status}" FontWeight="SemiBold"/>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding Status}" Value="OK">
+                                            <Setter TargetName="cell" Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                            <Setter TargetName="cell" Property="Text" Value="OK"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Status}" Value="FAIL">
+                                            <Setter TargetName="cell" Property="Foreground" Value="{StaticResource ErrorBrush}"/>
+                                            <Setter TargetName="cell" Property="Text" Value="FAIL"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Status}" Value="WARN">
+                                            <Setter TargetName="cell" Property="Foreground" Value="{StaticResource WarningTextBrush}"/>
+                                            <Setter TargetName="cell" Property="Text" Value="AVVISO"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Test"         Width="280" DisplayMemberBinding="{Binding Step}"/>
+                        <GridViewColumn Header="Risultato"    Width="320" DisplayMemberBinding="{Binding Detail}"/>
+                        <GridViewColumn Header="Suggerimento" Width="380" DisplayMemberBinding="{Binding Advice}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            </Grid>
+        </Border>
+
+    </DockPanel>
+</Window>

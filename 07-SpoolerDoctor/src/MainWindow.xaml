@@ -1,0 +1,123 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="07 - Spooler Doctor"
+        Width="1080" Height="680"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="891" MinHeight="444">
+    <DockPanel>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="24,18">
+            <StackPanel>
+                <TextBlock Text="Spooler Doctor" Style="{StaticResource HeaderTitle}"/>
+                <TextBlock x:Name="lblSubtitle" Style="{StaticResource HeaderSubtitle}" Margin="0,2,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Margin="20,12,20,0" x:Name="brdAdminBanner">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" x:Name="btnElevate" Content="Riavvia come amministratore"
+                        Style="{StaticResource SecondaryButton}" Visibility="Collapsed" VerticalAlignment="Center"/>
+                <TextBlock x:Name="lblAdminWarn" Style="{StaticResource AdminBannerText}"/>
+            </DockPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"
+                Padding="20,12">
+            <DockPanel>
+                <TextBlock x:Name="lblCounter" DockPanel.Dock="Right" VerticalAlignment="Center"
+                           Margin="12,0,4,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <StackPanel Orientation="Horizontal">
+                <Button x:Name="btnDiagnose"  Content="Diagnosi" IsDefault="True"
+                        AutomationProperties.Name="Diagnosi del sistema di stampa"/>
+                <!-- DangerButton: ferma lo spooler e cancella la coda di stampa. -->
+                <Button x:Name="btnRepair"    Content="Risolvi (richiede admin)"     Style="{StaticResource DangerButton}"
+                        AutomationProperties.Name="Risolvi: riavvia lo spooler e svuota la coda"/>
+                <CheckBox x:Name="chkClearQueue"  Content="Svuota coda"        IsChecked="False" VerticalAlignment="Center" Margin="12,0,8,0"/>
+                <CheckBox x:Name="chkRemoveOrphan" Content="Rimuovi driver orfani" IsChecked="False" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <Button x:Name="btnCancel"    Content="Annulla" Style="{StaticResource SecondaryButton}" IsEnabled="False"
+                        AutomationProperties.Name="Interrompi la rimozione dei driver in corso"/>
+                <Button x:Name="btnTestPrint" Content="Pagina di prova"        Style="{StaticResource SecondaryButton}"/>
+            </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource PanelBgBrush}"
+                BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,1,0,0"
+                Padding="20,8">
+            <TextBlock x:Name="lblStatus" Text="Pronto. Premi 'Diagnosi' (read-only)."/>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="20" Padding="0">
+            <TabControl Background="Transparent" BorderThickness="0">
+                <TabItem Header="Stato">
+                    <TextBox x:Name="txtStatus" IsReadOnly="True" FontFamily="Consolas" FontSize="13"
+                             VerticalScrollBarVisibility="Auto" BorderThickness="0" Padding="14"/>
+                </TabItem>
+                <TabItem Header="Stampanti">
+                    <Grid>
+              <TextBlock x:Name="lblEmptyPrinters" Visibility="Collapsed"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Margin="32" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap"
+                         Foreground="{StaticResource TextSecondaryBrush}"/>
+              <ListView x:Name="lvPrinters" AutomationProperties.Name="Elenco stampanti" BorderThickness="0">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Nome"   Width="260" DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="Driver" Width="240" DisplayMemberBinding="{Binding DriverName}"/>
+                                <GridViewColumn Header="Porta"  Width="180" DisplayMemberBinding="{Binding PortName}"/>
+                                <GridViewColumn Header="Tipo"   Width="100" DisplayMemberBinding="{Binding Type}"/>
+                                <GridViewColumn Header="Stato"  Width="120" DisplayMemberBinding="{Binding PrinterStatus}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+            </Grid>
+                </TabItem>
+                <TabItem Header="Job in coda">
+                    <Grid>
+              <TextBlock x:Name="lblEmptyJobs" Visibility="Collapsed"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Margin="32" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap"
+                         Foreground="{StaticResource TextSecondaryBrush}"/>
+              <ListView x:Name="lvJobs" AutomationProperties.Name="Elenco lavori di stampa in coda" BorderThickness="0">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Stampante" Width="220" DisplayMemberBinding="{Binding Printer}"/>
+                                <GridViewColumn Header="ID"        Width="60"  DisplayMemberBinding="{Binding Id}"/>
+                                <GridViewColumn Header="Documento" Width="240" DisplayMemberBinding="{Binding DocumentName}"/>
+                                <GridViewColumn Header="Utente"    Width="140" DisplayMemberBinding="{Binding UserName}"/>
+                                <GridViewColumn Header="Stato"     Width="120" DisplayMemberBinding="{Binding JobStatus}"/>
+                                <GridViewColumn Header="Inviato"   Width="160" DisplayMemberBinding="{Binding SubmittedTime}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+            </Grid>
+                </TabItem>
+                <TabItem Header="Driver orfani">
+                    <Grid>
+              <TextBlock x:Name="lblEmptyOrphans" Visibility="Collapsed"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Margin="32" MaxWidth="620" TextAlignment="Center" TextWrapping="Wrap"
+                         Foreground="{StaticResource TextSecondaryBrush}"/>
+              <ListView x:Name="lvOrphans" AutomationProperties.Name="Elenco driver di stampa orfani" BorderThickness="0">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Nome"        Width="320" DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="Produttore"  Width="200" DisplayMemberBinding="{Binding Manufacturer}"/>
+                                <GridViewColumn Header="Versione"    Width="180" DisplayMemberBinding="{Binding DriverVersion}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+            </Grid>
+                </TabItem>
+                <TabItem Header="Log operazioni">
+                    <TextBox x:Name="txtLog" IsReadOnly="True" FontFamily="Consolas" FontSize="12"
+                             VerticalScrollBarVisibility="Auto" BorderThickness="0" Padding="14"/>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+    </DockPanel>
+</Window>

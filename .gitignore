@@ -1,0 +1,85 @@
+# =============================================================================
+# UTILITIES — gitignore
+# Principio: niente runtime data, niente segreti, niente artefatti locali.
+# =============================================================================
+
+# --- Run-time data per tool (output, log, audit, backup) -----------------------
+# Pattern **/ copre qualsiasi profondita': root, primo livello tool, sotto-tool.
+**/data/logs/
+**/data/reports/
+**/data/backups/
+**/data/audit/
+**/data/cache/
+**/data/output/
+**/data/exports/
+**/data/temp/
+
+# --- Export di 05-ProfileMigrator ---------------------------------------------
+# La destinazione la sceglie il tecnico (di norma Desktop o USB), ma se per
+# sbaglio finisse dentro il repo questi file conterrebbero password WiFi in
+# chiaro, .reg di Outlook e mappature di rete. Rete di sicurezza.
+Migration-*/
+**/WiFi/*.xml
+wlan-export-*/
+manifest.json
+
+# --- Temp con dati sensibili ---------------------------------------------------
+wlan-summary-*/
+
+# --- Safety net (anche fuori da data/) ----------------------------------------
+*.log
+*.jsonl
+PowerShell_transcript.*.txt
+
+# --- Binari portable di terze parti (scaricati al setup) ----------------------
+**/tools/
+
+# --- Segreti e credenziali (NON committare MAI) -------------------------------
+.env
+.env.*
+secrets.json
+*.secret
+*.key
+*.pem
+*.pfx
+*.p12
+*.crt
+*.cer
+credentials.*
+
+# --- Windows ------------------------------------------------------------------
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+*.tmp
+*.bak
+*.old
+*.lnk
+
+# --- macOS / Linux (se mai aprissi il repo cross-platform) --------------------
+.DS_Store
+._*
+
+# --- Editor / IDE -------------------------------------------------------------
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*~
+
+# --- PowerShell ---------------------------------------------------------------
+*.pssproj.user
+
+# --- Compilati (PS2EXE / similar) ---------------------------------------------
+**/bin/
+*.exe.config
+
+# --- OneDrive / sync conflicts ------------------------------------------------
+*-Conflict-*
+*-Conflitto-*
+
+# --- Claude Code workspace ----------------------------------------------------
+.claude/

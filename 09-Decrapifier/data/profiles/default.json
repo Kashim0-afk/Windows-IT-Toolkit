@@ -1,0 +1,32 @@
+{
+  "name": "Default Win11 Conservativo",
+  "description": "Whitelist conservativa di bloatware Microsoft consumer su Win11. NON include cose che potrebbero servire all'utente: Mail/Calendar (WindowsCommunicationsApps), Teams (MSTeams/MicrosoftTeams), PowerAutomate, YourPhone (Phone Link). Esclude Calculator, Photos, Edge, Store, Camera, Notepad (utili sempre).",
+  "version": 2,
+  "notes": "Per profili piu' aggressivi crea un nuovo file (es. aggressive.json) - NON modificare default.json.",
+  "appxRemove": [
+    "Microsoft.3DBuilder",
+    "Microsoft.BingNews",
+    "Microsoft.BingWeather",
+    "Microsoft.BingSearch",
+    "Microsoft.GetHelp",
+    "Microsoft.Getstarted",
+    "Microsoft.MicrosoftOfficeHub",
+    "Microsoft.MicrosoftSolitaireCollection",
+    "Microsoft.MixedReality.Portal",
+    "Microsoft.OneConnect",
+    "Microsoft.People",
+    "Microsoft.Print3D",
+    "Microsoft.SkypeApp",
+    "Microsoft.WindowsFeedbackHub",
+    "Microsoft.ZuneMusic",
+    "Microsoft.ZuneVideo",
+    "Clipchamp.Clipchamp",
+    "Microsoft.GamingApp",
+    "Microsoft.Xbox.TCUI",
+    "Microsoft.XboxApp",
+    "Microsoft.XboxGameOverlay",
+    "Microsoft.XboxGamingOverlay",
+    "Microsoft.XboxIdentityProvider",
+    "Microsoft.XboxSpeechToTextOverlay"
+  ]
+}
